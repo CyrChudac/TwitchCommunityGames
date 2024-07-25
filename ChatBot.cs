@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using CommunityGamesTable.Properties;
+using System.Net;
 using TwitchLib.Client;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
@@ -37,7 +38,7 @@ namespace CommunityGamesTable {
         private void OnCommand(object? sender, OnChatCommandReceivedArgs args) {
             if(args.Command.CommandText.StartsWith(settings.joinCommand))
                 Join(args.Command);
-            if(args.Command.CommandText.StartsWith(settings.unlistCommand))
+            if(args.Command.CommandText == settings.unlistCommand)
                 Unlist(args.Command);
         }
 
@@ -47,7 +48,7 @@ namespace CommunityGamesTable {
             if(reg == currRegion) {
                 if(command.ArgumentsAsList.Count < 1) {
                     msg = settings.JoinWithoutBattletag;
-                } else if(settings.AllowMoreArguments || command.ArgumentsAsList.Count == 0){
+                } else if(settings.AllowMoreArguments || command.ArgumentsAsList.Count == 1){
                     addChatter(command.ChatMessage.DisplayName, command.ArgumentsAsList[0]);
                     msg = settings.SuccessfulJoin;
                 } else {
@@ -59,6 +60,7 @@ namespace CommunityGamesTable {
                 msg = settings.JoinNonExistentServer;
             }
             msg = msg.Replace("{0}", reg);
+            msg = msg.Replace("{1}", currRegion);
             ReplyToCommand(command, msg);
         }
 
@@ -75,12 +77,15 @@ namespace CommunityGamesTable {
         }
 
         private void ReplyToCommand(ChatCommand command, string text) {
-            authenticator.ChannelOwnerClient.SendReply(authenticator.ChannelName, command.ChatMessage.Id, text);
+            authenticator.ChannelOwnerClient.SendReply(settings.ChannelName, command.ChatMessage.Id, text);
         }
 
         private void OnJoinChannel(object? sender, OnJoinedChannelArgs args) {
-            if(settings.AnnounceChannelJoin)
-                authenticator.ChannelOwnerClient.SendMessage(args.Channel, settings.AnnounceChannelJoinText);
+            if(settings.AnnounceChannelJoin) {
+                var msg = settings.AnnounceChannelJoinText;
+                msg = msg.Replace("{1}", currRegion);
+                authenticator.ChannelOwnerClient.SendMessage(args.Channel, msg); 
+            }
         }
 
 		public void Dispose() {
@@ -91,7 +96,7 @@ namespace CommunityGamesTable {
                 }
                 if(authenticator.ChannelOwnerClient != null) {
                     if(settings.AnnounceShutDown)
-                        authenticator.ChannelOwnerClient.SendMessage(authenticator.ChannelName, settings.AnnounceShutDownText);
+                        authenticator.ChannelOwnerClient.SendMessage(settings.ChannelName, settings.AnnounceShutDownText);
                     authenticator.ChannelOwnerClient.Disconnect();
                 }
             }

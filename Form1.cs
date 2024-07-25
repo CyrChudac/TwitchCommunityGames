@@ -97,7 +97,7 @@ namespace CommunityGamesTable {
 		}
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
-			bot?.Dispose();
+			StopBot();
 		}
 
 		private void button1_Click(object sender, EventArgs e) {
@@ -124,7 +124,10 @@ namespace CommunityGamesTable {
 			}
 		}
 
-		private void button2_Click(object sender, EventArgs e) {
+		private void button2_Click(object? sender, EventArgs e)
+			=> StopBot();
+
+		private void StopBot() {
 			if(bot!= null) {
 				new Thread(new ThreadStart(bot.Dispose)).Start();
 				bot = null;

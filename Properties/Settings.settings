@@ -26,14 +26,14 @@
     <Setting Name="StartBotOnStartUp" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="botName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">CommunityGamesBot</Value>
+    <Setting Name="ChannelName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">cyrdach</Value>
     </Setting>
     <Setting Name="AnnounceChannelJoin" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="AnnounceChannelJoinText" Type="System.String" Scope="User">
-      <Value Profile="(Default)">You can now sign up in the community games!</Value>
+      <Value Profile="(Default)">You can now sign up in the community games on the {1} server!</Value>
     </Setting>
     <Setting Name="AnnounceShutDown" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -45,13 +45,13 @@
       <Value Profile="(Default)">You have successfully joined the community games!</Value>
     </Setting>
     <Setting Name="JoinWrongServer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">The community games are not running on the {0} server.</Value>
+      <Value Profile="(Default)">The community games are running on  the {1} server, not the {0} one.</Value>
     </Setting>
     <Setting Name="JoinNonExistentServer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">The region you attempted to join a game in does not exist.</Value>
+      <Value Profile="(Default)">The region you attempted to join a game in does not exist. (we play on {1} today)</Value>
     </Setting>
     <Setting Name="JoinWithoutBattletag" Type="System.String" Scope="User">
-      <Value Profile="(Default)">You have to specify your battletag. Use "!join{0} battletag" to join the game.</Value>
+      <Value Profile="(Default)">You have to specify your battletag. Use "!join{1} battletag" to join the game.</Value>
     </Setting>
     <Setting Name="AllowMoreArguments" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

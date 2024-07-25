@@ -121,13 +121,13 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("CommunityGamesBot")]
-        public string botName {
+        [global::System.Configuration.DefaultSettingValueAttribute("cyrdach")]
+        public string ChannelName {
             get {
-                return ((string)(this["botName"]));
+                return ((string)(this["ChannelName"]));
             }
             set {
-                this["botName"] = value;
+                this["ChannelName"] = value;
             }
         }
         
@@ -145,7 +145,7 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("You can now sign up in the community games!")]
+        [global::System.Configuration.DefaultSettingValueAttribute("You can now sign up in the community games on the {1} server!")]
         public string AnnounceChannelJoinText {
             get {
                 return ((string)(this["AnnounceChannelJoinText"]));
@@ -193,7 +193,7 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("The community games are not running on the {0} server.")]
+        [global::System.Configuration.DefaultSettingValueAttribute("The community games are running on  the {1} server, not the {0} one.")]
         public string JoinWrongServer {
             get {
                 return ((string)(this["JoinWrongServer"]));
@@ -205,7 +205,8 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("The region you attempted to join a game in does not exist.")]
+        [global::System.Configuration.DefaultSettingValueAttribute("The region you attempted to join a game in does not exist. (we play on {1} today)" +
+            "")]
         public string JoinNonExistentServer {
             get {
                 return ((string)(this["JoinNonExistentServer"]));
@@ -217,7 +218,7 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("You have to specify your battletag. Use \"!join{0} battletag\" to join the game.")]
+        [global::System.Configuration.DefaultSettingValueAttribute("You have to specify your battletag. Use \"!join{1} battletag\" to join the game.")]
         public string JoinWithoutBattletag {
             get {
                 return ((string)(this["JoinWithoutBattletag"]));

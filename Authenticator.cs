@@ -15,7 +15,6 @@ namespace CommunityGamesTable {
 	internal class Authenticator {
         private string ClientID => settings.clientId;
         private string ClientSecret => settings.clientSecret;
-        private string BotName => settings.botName;
         private List<string> Scopes = new List<string>() {
             "chat:read", "chat:edit",
         };
@@ -28,7 +27,7 @@ namespace CommunityGamesTable {
         #region result_data
         public TwitchClient ChannelOwnerClient;
         public HttpServer WebServer;
-        public string ChannelName;
+        public string BotName;
         public string ChannelID;
 		#endregion
 
@@ -38,7 +37,6 @@ namespace CommunityGamesTable {
 
 		public void Auth(Action<TwitchClient> beforeConnecting) {
             WebServer = new HttpServer();
-            //WebServer.EndPoint = new IPEndPoint(IPAddress.Loopback, 80);
             var add = IPAddress.Loopback;
             WebServer.EndPoint = new IPEndPoint(add, Port);
 
@@ -48,8 +46,8 @@ namespace CommunityGamesTable {
                         var code = e.Request.QueryString["code"];
                         var tokens = await OwnerOfChannelAccessAndRefresh(code);
                         var ownerAccessToken = tokens.Item1;
-                        (ChannelID, ChannelName) = await SetNameAndIDByOauthedUser(ownerAccessToken);
-                        ChannelOwnerClient = InitializeOwnerConnection(ChannelName, ownerAccessToken, beforeConnecting);
+                        (ChannelID, BotName) = await SetNameAndIDByOauthedUser(ownerAccessToken);
+                        ChannelOwnerClient = InitializeOwnerConnection(BotName, ownerAccessToken, beforeConnecting);
                     }
                 }
             };
@@ -62,9 +60,9 @@ namespace CommunityGamesTable {
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(authUrl) { UseShellExecute = true });
         }
 
-        TwitchClient InitializeOwnerConnection(string channel, string token, Action<TwitchClient> beforeConnecting) {
+        TwitchClient InitializeOwnerConnection(string botName, string token, Action<TwitchClient> beforeConnecting) {
             TwitchClient ownerTwitchClient = new TwitchClient();
-            ownerTwitchClient.Initialize(new ConnectionCredentials(BotName, token), channel);
+            ownerTwitchClient.Initialize(new ConnectionCredentials(botName, token), settings.ChannelName);
 
             beforeConnecting.Invoke(ownerTwitchClient);
 
