@@ -1,0 +1,72 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CommunityGamesTable.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="clientId" Type="System.String" Scope="User">
+      <Value Profile="(Default)">clientIdHere</Value>
+    </Setting>
+    <Setting Name="clientSecret" Type="System.String" Scope="User">
+      <Value Profile="(Default)">secretIdHere</Value>
+    </Setting>
+    <Setting Name="redirectUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://localhost</Value>
+    </Setting>
+    <Setting Name="port" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">25777</Value>
+    </Setting>
+    <Setting Name="joinCommand" Type="System.String" Scope="User">
+      <Value Profile="(Default)">join</Value>
+    </Setting>
+    <Setting Name="unlistCommand" Type="System.String" Scope="User">
+      <Value Profile="(Default)">unlist</Value>
+    </Setting>
+    <Setting Name="regions" Type="System.String" Scope="User">
+      <Value Profile="(Default)">EU;NA;Asia;Misc</Value>
+    </Setting>
+    <Setting Name="StartBotOnStartUp" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="botName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">CommunityGamesBot</Value>
+    </Setting>
+    <Setting Name="AnnounceChannelJoin" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AnnounceChannelJoinText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You can now sign up in the community games!</Value>
+    </Setting>
+    <Setting Name="AnnounceShutDown" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AnnounceShutDownText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Community games are now ending.</Value>
+    </Setting>
+    <Setting Name="SuccessfulJoin" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You have successfully joined the community games!</Value>
+    </Setting>
+    <Setting Name="JoinWrongServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">The community games are not running on the {0} server.</Value>
+    </Setting>
+    <Setting Name="JoinNonExistentServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">The region you attempted to join a game in does not exist.</Value>
+    </Setting>
+    <Setting Name="JoinWithoutBattletag" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You have to specify your battletag. Use "!join{0} battletag" to join the game.</Value>
+    </Setting>
+    <Setting Name="AllowMoreArguments" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="JoinTooManyArguments" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You have to only specify your battletag when joining.</Value>
+    </Setting>
+    <Setting Name="UnlistTooManyArguments" Type="System.String" Scope="User">
+      <Value Profile="(Default)">This command is used without arguments.</Value>
+    </Setting>
+    <Setting Name="UnlistSuccessful" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You were removed from the current community games.</Value>
+    </Setting>
+    <Setting Name="UnlistNotSuccessful" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You were not removed since you were not on the player list.</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

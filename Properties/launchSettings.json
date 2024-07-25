@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CommunityGamesTable": {
+      "commandName": "Project",
+      "commandLineArgs": "join\r\nunlist"
+    }
+  }
+}
