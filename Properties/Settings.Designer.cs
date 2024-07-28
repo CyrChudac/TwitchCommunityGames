@@ -121,7 +121,7 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("cyrdach")]
+        [global::System.Configuration.DefaultSettingValueAttribute("heretic721")]
         public string ChannelName {
             get {
                 return ((string)(this["ChannelName"]));
@@ -181,7 +181,8 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("You have successfully joined the community games!")]
+        [global::System.Configuration.DefaultSettingValueAttribute("You have successfully joined the community games! Friend request heretic721#1404 " +
+            "to speed up the process please.")]
         public string SuccessfulJoin {
             get {
                 return ((string)(this["SuccessfulJoin"]));
@@ -285,6 +286,42 @@ namespace CommunityGamesTable.Properties {
             }
             set {
                 this["UnlistNotSuccessful"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("You already joined the game, but your battletag was updated now.")]
+        public string JoinAlreadyJoined {
+            get {
+                return ((string)(this["JoinAlreadyJoined"]));
+            }
+            set {
+                this["JoinAlreadyJoined"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ReplyIncludesUserName {
+            get {
+                return ((bool)(this["ReplyIncludesUserName"]));
+            }
+            set {
+                this["ReplyIncludesUserName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.01")]
+        public float ChatReplyDelay {
+            get {
+                return ((float)(this["ChatReplyDelay"]));
+            }
+            set {
+                this["ChatReplyDelay"] = value;
             }
         }
     }

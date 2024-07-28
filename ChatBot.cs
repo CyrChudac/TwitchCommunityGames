@@ -15,10 +15,10 @@ namespace CommunityGamesTable {
         readonly Properties.Settings settings;
         readonly string currRegion;
         readonly Func<string, bool> removeCahtter;
-        readonly Action<string, string> addChatter;
+        readonly Func<string, string, bool> addChatter;
 
 		public ChatBot(Properties.Settings settings, string currRegion, 
-            Func<string, bool> removeCahtter, Action<string, string> addChatter) {
+            Func<string, bool> removeCahtter, Func<string, string, bool> addChatter) {
 			this.settings = settings;
 			this.currRegion = currRegion;
 			authenticator = new Authenticator(settings);
@@ -30,7 +30,6 @@ namespace CommunityGamesTable {
             Action<TwitchClient> beforeConnecting = (client) => {
                 client.OnJoinedChannel += OnJoinChannel;
                 client.OnChatCommandReceived += OnCommand;
-                //TODO: add listeners here
             };
             authenticator.Auth(beforeConnecting);
         }
@@ -49,8 +48,11 @@ namespace CommunityGamesTable {
                 if(command.ArgumentsAsList.Count < 1) {
                     msg = settings.JoinWithoutBattletag;
                 } else if(settings.AllowMoreArguments || command.ArgumentsAsList.Count == 1){
-                    addChatter(command.ChatMessage.DisplayName, command.ArgumentsAsList[0]);
-                    msg = settings.SuccessfulJoin;
+                    if(addChatter(command.ChatMessage.DisplayName, command.ArgumentsAsList[0])) {
+                        msg = settings.SuccessfulJoin;
+                    } else {
+                        msg = settings.JoinAlreadyJoined;
+                    }
                 } else {
                     msg = settings.JoinTooManyArguments;
                 }
@@ -77,6 +79,9 @@ namespace CommunityGamesTable {
         }
 
         private void ReplyToCommand(ChatCommand command, string text) {
+            if(settings.ReplyIncludesUserName)
+                text = $"{command.ChatMessage.DisplayName}: {text}";
+            Thread.Sleep((int)(settings.ChatReplyDelay * 1000));
             authenticator.ChannelOwnerClient.SendReply(settings.ChannelName, command.ChatMessage.Id, text);
         }
 
@@ -91,13 +96,17 @@ namespace CommunityGamesTable {
 		public void Dispose() {
             if(authenticator != null) {
                 if(authenticator.WebServer != null) {
-                    authenticator.WebServer.Stop();
-                    authenticator.WebServer.Dispose();
+                    var tmp = authenticator.WebServer;
+                    authenticator.WebServer = null;
+                    tmp.Stop();
+                    tmp.Dispose();
                 }
                 if(authenticator.ChannelOwnerClient != null) {
+                    var tmp = authenticator.ChannelOwnerClient;
+                    authenticator.ChannelOwnerClient = null;
                     if(settings.AnnounceShutDown)
-                        authenticator.ChannelOwnerClient.SendMessage(settings.ChannelName, settings.AnnounceShutDownText);
-                    authenticator.ChannelOwnerClient.Disconnect();
+                        tmp.SendMessage(settings.ChannelName, settings.AnnounceShutDownText);
+                    tmp.Disconnect();
                 }
             }
 		}

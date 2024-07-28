@@ -33,29 +33,36 @@ namespace CommunityGamesTable {
 			});
 		}
 
-		private void AddWaitingChatter(string twitch, string battletag) {
-			if(AlreadyHasChatter(twitch))
-				return;
-			waitingChattersPanel.Invoke(() => {
-				var wc = GetChatter(twitch, battletag, waitingChattersPanel);
-				wc.AddTickClickEvent((x, y) => {
-					waitingChattersPanel.Controls.Remove(wc);
-					AddInGameChatter(twitch, battletag);
+		/// <returns>True if the chatter was added, False if it was updated.</returns>
+		private bool AddWaitingChatter(string twitch, string battletag) {
+			var old = AlreadyHasChatter(twitch);
+			if(old != null) {
+				old.Invoke(() => old.Battletag = battletag);
+				return false;
+			} else {
+				waitingChattersPanel.Invoke(() => {
+					var wc = GetChatter(twitch, battletag, waitingChattersPanel);
+					wc.AddTickClickEvent((x, y) => {
+						waitingChattersPanel.Controls.Remove(wc);
+						AddInGameChatter(twitch, battletag);
+					});
 				});
-			});
+				return true;
+			}
 		}
 		
-		private bool AlreadyHasChatter(string twitch)
-			=> HasChatter(waitingChattersPanel, twitch) || HasChatter(inGameChattersPanel, twitch);
+		private WaitingChatter? AlreadyHasChatter(string twitch) {
+			return HasChatter(waitingChattersPanel, twitch) ?? HasChatter(inGameChattersPanel, twitch);
+		}
 
-		private bool HasChatter(Panel panel, string twitch) {
+		private WaitingChatter? HasChatter(Panel panel, string twitch) {
 			foreach(var c in panel.Controls) {
 				if(c is WaitingChatter wc) {
 					if(wc.TwitchNick == twitch)
-						return true;
+						return wc;
 				}
 			}
-			return false;
+			return null;
 		}
 
 		private void AddInGameChatter(string twitch, string battletag) {
@@ -124,8 +131,20 @@ namespace CommunityGamesTable {
 			}
 		}
 
-		private void button2_Click(object? sender, EventArgs e)
-			=> StopBot();
+		private void button2_Click(object? sender, EventArgs e) {
+			StopBot();
+			RemoveChatterFromPanel(waitingChattersPanel);
+			RemoveChatterFromPanel(inGameChattersPanel);
+		}
+
+		private void RemoveChatterFromPanel(Panel panel) {
+			for(int i = 0; i < panel.Controls.Count; i++) {
+				if(panel.Controls[i] is WaitingChatter) {
+					panel.Controls.RemoveAt(i);
+					i--;
+				}
+			}
+		}
 
 		private void StopBot() {
 			if(bot!= null) {
