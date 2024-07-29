@@ -1,11 +1,14 @@
 ﻿using CommunityGamesTable.Properties;
 using System.Net;
+using System.Xml;
+using TwitchLib.Api.Core.Exceptions;
 using TwitchLib.Client;
 using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Extensions;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
+using TwitchLib.Communication.Interfaces;
 using TwitchLib.Communication.Models;
 
 namespace CommunityGamesTable {
@@ -26,25 +29,50 @@ namespace CommunityGamesTable {
 			this.addChatter = addChatter;
 		}
 
+
 		public void Start() {
-            Action<TwitchClient> beforeConnecting = (client) => {
+            void beforeConnecting(TwitchClient client) {
                 client.OnJoinedChannel += OnJoinChannel;
                 client.OnChatCommandReceived += OnCommand;
-            };
+            }
             authenticator.Auth(beforeConnecting);
         }
   
+        bool AreCommandsSame(string got, string expected) {
+            return (settings.CommandsAreCaseSensitive && got == expected)
+                || ((!settings.CommandsAreCaseSensitive) && got.ToLower() == expected.ToLower());
+        }
+        
+        bool CommandStartsWithExpected(string cmd, string expected) {
+            return (settings.CommandsAreCaseSensitive && cmd.StartsWith(expected)) || 
+                ((!settings.CommandsAreCaseSensitive) && cmd.ToLower().StartsWith(expected.ToLower()));
+        }
+
+        bool IsCommandIn(string cmd, IReadOnlyList<string> inside) {
+            return (settings.CommandsAreCaseSensitive && inside.Contains(cmd))
+                || ((!settings.CommandsAreCaseSensitive) && inside.Select(x => x.ToLower()).Contains(cmd.ToLower()));
+        }
+
         private void OnCommand(object? sender, OnChatCommandReceivedArgs args) {
-            if(args.Command.CommandText.StartsWith(settings.joinCommand))
+            var cmdText = args.Command.CommandText;
+
+            if(CommandStartsWithExpected(cmdText, settings.joinCommand))
                 Join(args.Command);
-            if(args.Command.CommandText == settings.unlistCommand)
+            if(AreCommandsSame(cmdText, settings.unlistCommand))
                 Unlist(args.Command);
+            if(settings.AllowRefreshCommand && AreCommandsSame(cmdText, "refresh")) {
+                var prev = authenticator.OwnerAccessToken;
+                authenticator.Refresh(c => c.OnChatCommandReceived += OnCommand);
+                Thread.Sleep(1500);
+                var curr = authenticator.OwnerAccessToken;
+                WriteMessage($"The access token has been refreshed!\n({prev} -> {curr})");
+            }
         }
 
         private void Join(ChatCommand command) {
             var reg = command.CommandText[(settings.joinCommand.Length)..];
             string msg;
-            if(reg == currRegion) {
+            if(AreCommandsSame(reg, currRegion)) {
                 if(command.ArgumentsAsList.Count < 1) {
                     msg = settings.JoinWithoutBattletag;
                 } else if(settings.AllowMoreArguments || command.ArgumentsAsList.Count == 1){
@@ -56,7 +84,7 @@ namespace CommunityGamesTable {
                 } else {
                     msg = settings.JoinTooManyArguments;
                 }
-            }else if(settings.GetRegions().Contains(reg)) {
+            }else if(IsCommandIn(reg, settings.GetRegions())) {
                 msg = settings.JoinWrongServer;
             } else {
                 msg = settings.JoinNonExistentServer;
@@ -82,25 +110,36 @@ namespace CommunityGamesTable {
             if(settings.ReplyIncludesUserName)
                 text = $"{command.ChatMessage.DisplayName}: {text}";
             Thread.Sleep((int)(settings.ChatReplyDelay * 1000));
-            authenticator.ChannelOwnerClient.SendReply(settings.ChannelName, command.ChatMessage.Id, text);
+            WriteMessage(text, command.ChatMessage.Id);
         }
 
         private void OnJoinChannel(object? sender, OnJoinedChannelArgs args) {
             if(settings.AnnounceChannelJoin) {
                 var msg = settings.AnnounceChannelJoinText;
                 msg = msg.Replace("{1}", currRegion);
-                authenticator.ChannelOwnerClient.SendMessage(args.Channel, msg); 
+                WriteMessage(msg);
+            }
+        }
+
+        private void WriteMessage(string text, string? replyMessageId = null) {
+            void Write() {
+                if(replyMessageId != null) {
+                    authenticator.ChannelOwnerClient.SendReply(settings.ChannelName, replyMessageId, text);
+                } else {
+                    authenticator.ChannelOwnerClient.SendMessage(settings.ChannelName, text);
+                }
+            }
+            try {
+                Write();
+            }catch(BadScopeException) {
+                //the access token has expired so we have to refresh it
+                authenticator.Refresh(c => c.OnChatCommandReceived += OnCommand);
+                Write();
             }
         }
 
 		public void Dispose() {
             if(authenticator != null) {
-                if(authenticator.WebServer != null) {
-                    var tmp = authenticator.WebServer;
-                    authenticator.WebServer = null;
-                    tmp.Stop();
-                    tmp.Dispose();
-                }
                 if(authenticator.ChannelOwnerClient != null) {
                     var tmp = authenticator.ChannelOwnerClient;
                     authenticator.ChannelOwnerClient = null;

@@ -37,7 +37,7 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("secretIdHere")]
+        [global::System.Configuration.DefaultSettingValueAttribute("clientSecretHere")]
         public string clientSecret {
             get {
                 return ((string)(this["clientSecret"]));
@@ -322,6 +322,30 @@ namespace CommunityGamesTable.Properties {
             }
             set {
                 this["ChatReplyDelay"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AllowRefreshCommand {
+            get {
+                return ((bool)(this["AllowRefreshCommand"]));
+            }
+            set {
+                this["AllowRefreshCommand"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CommandsAreCaseSensitive {
+            get {
+                return ((bool)(this["CommandsAreCaseSensitive"]));
+            }
+            set {
+                this["CommandsAreCaseSensitive"] = value;
             }
         }
     }

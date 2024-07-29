@@ -6,7 +6,7 @@
       <Value Profile="(Default)">clientIdHere</Value>
     </Setting>
     <Setting Name="clientSecret" Type="System.String" Scope="User">
-      <Value Profile="(Default)">secretIdHere</Value>
+      <Value Profile="(Default)">clientSecretHere</Value>
     </Setting>
     <Setting Name="redirectUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://localhost</Value>
@@ -76,6 +76,12 @@
     </Setting>
     <Setting Name="ChatReplyDelay" Type="System.Single" Scope="User">
       <Value Profile="(Default)">1.01</Value>
+    </Setting>
+    <Setting Name="AllowRefreshCommand" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="CommandsAreCaseSensitive" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>
