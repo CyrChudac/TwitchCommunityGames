@@ -91,6 +91,7 @@ namespace CommunityGamesTable {
             }
             msg = msg.Replace("{0}", reg);
             msg = msg.Replace("{1}", currRegion);
+            msg = msg.Replace("{2}", settings.StreamerBattletag);
             ReplyToCommand(command, msg);
         }
 

@@ -13,11 +13,17 @@ namespace CommunityGamesTable {
 		public WaitingChatter() {
 			InitializeComponent();
 		}
-
+		
 		[Description("Whether the tick button is displayed."),Category("Appearance")] 
 		public bool TickVisible {
 			get => tickButton.Visible;
 			set => tickButton.Visible = value;
+		}
+
+		[Description("Whether the no button is displayed."),Category("Appearance")] 
+		public bool NoVisible {
+			get => noButton.Visible;
+			set => noButton.Visible = value;
 		}
 		
 		[Description("The twitch username of the player."),Category("Data")] 
@@ -30,6 +36,12 @@ namespace CommunityGamesTable {
 		public string Battletag {
 			get => battletag.Text;
 			set => battletag.Text = value;
+		}
+
+		[Description("The number associated with the player."),Category("Data")] 
+		public int Counter {
+			get => int.Parse(counter.Text);
+			set => counter.Text = value.ToString();
 		}
 		
 		public void AddTickClickEvent(Action<object?, EventArgs> act) {

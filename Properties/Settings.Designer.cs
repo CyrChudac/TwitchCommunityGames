@@ -181,8 +181,8 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("You have successfully joined the community games! Friend request heretic721#1404 " +
-            "to speed up the process please.")]
+        [global::System.Configuration.DefaultSettingValueAttribute("You have successfully joined the community games! Friend request {2} to speed up " +
+            "the process please.")]
         public string SuccessfulJoin {
             get {
                 return ((string)(this["SuccessfulJoin"]));
@@ -291,7 +291,7 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("You already joined the game, but your battletag was updated now.")]
+        [global::System.Configuration.DefaultSettingValueAttribute("You have already joined the game, but your battletag was updated now.")]
         public string JoinAlreadyJoined {
             get {
                 return ((string)(this["JoinAlreadyJoined"]));
@@ -346,6 +346,42 @@ namespace CommunityGamesTable.Properties {
             }
             set {
                 this["CommandsAreCaseSensitive"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("7")]
+        public int MaxInGameChatters {
+            get {
+                return ((int)(this["MaxInGameChatters"]));
+            }
+            set {
+                this["MaxInGameChatters"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IncludeStreamerInGame {
+            get {
+                return ((bool)(this["IncludeStreamerInGame"]));
+            }
+            set {
+                this["IncludeStreamerInGame"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("heretic721#1404")]
+        public string StreamerBattletag {
+            get {
+                return ((string)(this["StreamerBattletag"]));
+            }
+            set {
+                this["StreamerBattletag"] = value;
             }
         }
     }

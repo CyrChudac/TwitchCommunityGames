@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Windows.Forms;
+using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 
 namespace CommunityGamesTable {
 	public partial class Form1 : Form {
@@ -19,12 +20,27 @@ namespace CommunityGamesTable {
 				RemoveChatterFromPanel(twitch, inGameChattersPanel); 
 		}
 
+		int inGameCount = 0;
+		int waitingCount = 0;
+		
+		private void AddToPanelCounter(int toAdd, Panel panel) {
+			if(panel == waitingChattersPanel) {
+				waitingCount += toAdd;
+			}else if(panel == inGameChattersPanel) {
+				inGameCount += toAdd;
+			} else {
+				throw new NotImplementedException();
+			}
+		}
+
 		private bool RemoveChatterFromPanel(string twitch, Panel from) {
 			return from.Invoke(() => {
 				for(int i = 0; i < from.Controls.Count; i++) {
 					if(from.Controls[i] is WaitingChatter wc) {
 						if(wc.TwitchNick == twitch) {
 							from.Controls.RemoveAt(i);
+							AddToPanelCounter(-1, from);
+							ChangeChattersNumbering(from);
 							return true;
 						}
 					}
@@ -43,8 +59,11 @@ namespace CommunityGamesTable {
 				waitingChattersPanel.Invoke(() => {
 					var wc = GetChatter(twitch, battletag, waitingChattersPanel);
 					wc.AddTickClickEvent((x, y) => {
-						waitingChattersPanel.Controls.Remove(wc);
-						AddInGameChatter(twitch, battletag);
+						if(AddInGameChatter(twitch, battletag)!= null){
+							waitingChattersPanel.Controls.Remove(wc);
+							waitingCount--;
+							ChangeChattersNumbering(waitingChattersPanel); 
+						}
 					});
 				});
 				return true;
@@ -65,9 +84,20 @@ namespace CommunityGamesTable {
 			return null;
 		}
 
-		private void AddInGameChatter(string twitch, string battletag) {
+		bool allowMore = false;
+		private WaitingChatter? AddInGameChatter(string twitch, string battletag) {
+			if(inGameCount == settings.MaxInGameChatters && (!allowMore)) {
+				var res = MessageBox.Show($"There are already {inGameCount} chatters in game. Add more?", "Add more?",
+					MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if(res == DialogResult.No || res == DialogResult.Cancel) {
+					return null;
+				} else {
+					allowMore = true;
+				}
+			}
 			var wc = GetChatter(twitch, battletag, inGameChattersPanel);
 			wc.TickVisible = false;
+			return wc;
 		}
 
 		private WaitingChatter GetChatter(string twitch, string battletag, Panel into) {
@@ -76,14 +106,45 @@ namespace CommunityGamesTable {
 			wc.Battletag = battletag;
 			wc.Dock = DockStyle.Top;
 			into.Controls.Add(wc);
+			AddToPanelCounter(1, into);
+			wc.BringToFront();
+			ChangeChattersNumbering(into);
 			wc.AddNoClickEvent((x, y) => {
 				into.Controls.Remove(wc);
+				AddToPanelCounter(-1, into);
+				ChangeChattersNumbering(into);
 			});
 			return wc;
 		}
 
+		int ToAddAutomatic => Math.Min(settings.MaxInGameChatters - inGameCount, Math.Min(waitingCount, settings.MaxInGameChatters));
+
+		private void ChangeChattersNumbering(Panel panel) {
+			int counter = 1;
+			for(int i = panel.Controls.Count - 1; i >= 0; i--) {
+				if(panel.Controls[i] is WaitingChatter wc) {
+					wc.Counter = counter++;
+				}
+			}
+			SetAdd7Text();
+		}
+
+		private void SetAdd7Text()
+			=> add7ToGame.Text = $"Add first {ToAddAutomatic}";
+
 		private void randomInGameButton_Click(object sender, EventArgs e) {
 			var wc = RandomFrom(inGameChattersPanel);
+			int max = 20;
+			int counter = 0;
+			while(wc?.TwitchNick == settings.ChannelName) {
+				counter++;
+				wc = RandomFrom(inGameChattersPanel);
+				if(counter >= max) {
+					wc = null;
+					break;
+				}
+					
+			}
 			randomInGameLabel.Text = wc?.TwitchNick ?? "";
 		}
 		private void RandomWaitingChatterButton_Click(object sender, EventArgs e) {
@@ -126,6 +187,16 @@ namespace CommunityGamesTable {
 						bot.Start();
 						button1.Visible = false; 
 						button2.Visible = true;
+						add7ToGame.Visible = true;
+						SetAdd7Text();
+						if(settings.IncludeStreamerInGame) {
+							var wc = AddInGameChatter(settings.ChannelName, settings.StreamerBattletag);
+							if(wc != null) {
+								wc.NoVisible = false;
+								inGameCount--;
+								Height += wc.Height;
+							}
+						}
 					}
 				}
 			}
@@ -133,11 +204,13 @@ namespace CommunityGamesTable {
 
 		private void button2_Click(object? sender, EventArgs e) {
 			StopBot();
-			RemoveChatterFromPanel(waitingChattersPanel);
-			RemoveChatterFromPanel(inGameChattersPanel);
+			waitingCount = 0;
+			RemoveChattersFromPanel(waitingChattersPanel);
+			inGameCount = 0;
+			RemoveChattersFromPanel(inGameChattersPanel);
 		}
 
-		private void RemoveChatterFromPanel(Panel panel) {
+		private void RemoveChattersFromPanel(Panel panel) {
 			for(int i = 0; i < panel.Controls.Count; i++) {
 				if(panel.Controls[i] is WaitingChatter) {
 					panel.Controls.RemoveAt(i);
@@ -152,7 +225,32 @@ namespace CommunityGamesTable {
 				bot = null;
 				button1.Visible = true; 
 				button2.Visible = false;
+				add7ToGame.Visible = false;
 			}
+		}
+
+		private void add7ToGame_Click(object sender, EventArgs e) {
+			List<WaitingChatter> chatters = new List<WaitingChatter>();
+			int toAdd = ToAddAutomatic;
+			for(int i = waitingChattersPanel.Controls.Count - 1; i >= 0; i--) {
+				if(waitingChattersPanel.Controls[i] is WaitingChatter wc) {
+					chatters.Add(wc);
+					waitingChattersPanel.Controls.RemoveAt(i);
+					waitingCount--;
+				}
+				if(chatters.Count == toAdd)
+					break;
+			}
+			ChangeChattersNumbering(waitingChattersPanel);
+			foreach(var ch in chatters) {
+				AddInGameChatter(ch.TwitchNick, ch.Battletag);
+			}
+		}
+
+		int artifitialChattersCounter = 1;
+		private void addOneWaitChatter_Click(object sender, EventArgs e) {
+			AddWaitingChatter((artifitialChattersCounter * 111).ToString(), (artifitialChattersCounter * 16).ToString());
+			artifitialChattersCounter++;
 		}
 	}
 }

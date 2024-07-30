@@ -42,7 +42,7 @@
       <Value Profile="(Default)">Community games are now ending.</Value>
     </Setting>
     <Setting Name="SuccessfulJoin" Type="System.String" Scope="User">
-      <Value Profile="(Default)">You have successfully joined the community games! Friend request heretic721#1404 to speed up the process please.</Value>
+      <Value Profile="(Default)">You have successfully joined the community games! Friend request {2} to speed up the process please.</Value>
     </Setting>
     <Setting Name="JoinWrongServer" Type="System.String" Scope="User">
       <Value Profile="(Default)">The community games are running on  the {1} server, not the {0} one.</Value>
@@ -69,7 +69,7 @@
       <Value Profile="(Default)">You were not removed since you were not on the player list.</Value>
     </Setting>
     <Setting Name="JoinAlreadyJoined" Type="System.String" Scope="User">
-      <Value Profile="(Default)">You already joined the game, but your battletag was updated now.</Value>
+      <Value Profile="(Default)">You have already joined the game, but your battletag was updated now.</Value>
     </Setting>
     <Setting Name="ReplyIncludesUserName" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -82,6 +82,15 @@
     </Setting>
     <Setting Name="CommandsAreCaseSensitive" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="MaxInGameChatters" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">7</Value>
+    </Setting>
+    <Setting Name="IncludeStreamerInGame" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="StreamerBattletag" Type="System.String" Scope="User">
+      <Value Profile="(Default)">heretic721#1404</Value>
     </Setting>
   </Settings>
 </SettingsFile>
