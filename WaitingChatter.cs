@@ -16,7 +16,7 @@ namespace CommunityGamesTable {
 		
 		[Description("Whether the tick button is displayed."),Category("Appearance")] 
 		public bool TickVisible {
-			get => tickButton.Visible;
+			get => tickButton.Visible; 
 			set => tickButton.Visible = value;
 		}
 

@@ -45,13 +45,13 @@
       <Value Profile="(Default)">You have successfully joined the community games! Friend request {2} to speed up the process please.</Value>
     </Setting>
     <Setting Name="JoinWrongServer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">The community games are running on  the {1} server, not the {0} one.</Value>
+      <Value Profile="(Default)">The community games are running on the {1} server, not the {0} one.</Value>
     </Setting>
     <Setting Name="JoinNonExistentServer" Type="System.String" Scope="User">
       <Value Profile="(Default)">The region you attempted to join a game in does not exist. (we play on {1} today)</Value>
     </Setting>
     <Setting Name="JoinWithoutBattletag" Type="System.String" Scope="User">
-      <Value Profile="(Default)">You have to specify your battletag. Use "!join{1} battletag" to join the game.</Value>
+      <Value Profile="(Default)">You have to specify your battletag. Use "!{join}{1} battletag" to join the game.</Value>
     </Setting>
     <Setting Name="AllowMoreArguments" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -91,6 +91,12 @@
     </Setting>
     <Setting Name="StreamerBattletag" Type="System.String" Scope="User">
       <Value Profile="(Default)">heretic721#1404</Value>
+    </Setting>
+    <Setting Name="SignupCommand" Type="System.String" Scope="User">
+      <Value Profile="(Default)">signup</Value>
+    </Setting>
+    <Setting Name="SignupText" Type="System.String" Scope="User">
+      <Value Profile="(Default)">If you would like to sign up for the next community game. Type this: !{join}{1} YourbattlenetHere</Value>
     </Setting>
   </Settings>
 </SettingsFile>

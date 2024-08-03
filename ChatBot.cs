@@ -60,6 +60,8 @@ namespace CommunityGamesTable {
                 Join(args.Command);
             if(AreCommandsSame(cmdText, settings.unlistCommand))
                 Unlist(args.Command);
+            if(AreCommandsSame(cmdText, settings.SignupCommand))
+                SignUp(args.Command);
             if(settings.AllowRefreshCommand && AreCommandsSame(cmdText, "refresh")) {
                 var prev = authenticator.OwnerAccessToken;
                 authenticator.Refresh(c => c.OnChatCommandReceived += OnCommand);
@@ -67,6 +69,10 @@ namespace CommunityGamesTable {
                 var curr = authenticator.OwnerAccessToken;
                 WriteMessage($"The access token has been refreshed!\n({prev} -> {curr})");
             }
+        }
+
+        private void SignUp(ChatCommand command) {
+            ReplyToCommand(command, ReplaceStaticStrings(settings.SignupText));
         }
 
         private void Join(ChatCommand command) {
@@ -90,10 +96,17 @@ namespace CommunityGamesTable {
                 msg = settings.JoinNonExistentServer;
             }
             msg = msg.Replace("{0}", reg);
-            msg = msg.Replace("{1}", currRegion);
-            msg = msg.Replace("{2}", settings.StreamerBattletag);
+            msg = ReplaceStaticStrings(msg);
             ReplyToCommand(command, msg);
         }
+
+        string ReplaceStaticStrings(string msg) {
+            msg = msg.Replace("{1}", currRegion);
+            msg = msg.Replace("{2}", settings.StreamerBattletag);
+            msg = msg.Replace("{join}", settings.joinCommand);
+            return msg;
+        }
+
 
         private void Unlist(ChatCommand command) {
             if(settings.AllowMoreArguments || command.ArgumentsAsList.Count == 0) {

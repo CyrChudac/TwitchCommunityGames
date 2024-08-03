@@ -92,9 +92,9 @@ namespace CommunityGamesTable {
                 {"grant_type", "refresh_token"},
                 {"refresh_token", refreshToken}
             });
-        }
+        } 
 
-        void DisplayError(string text) {
+        void DisplayError(string text) { 
                 MessageBox.Show(text, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 throw new Exception(text);
         }

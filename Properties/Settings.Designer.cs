@@ -194,7 +194,7 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("The community games are running on  the {1} server, not the {0} one.")]
+        [global::System.Configuration.DefaultSettingValueAttribute("The community games are running on the {1} server, not the {0} one.")]
         public string JoinWrongServer {
             get {
                 return ((string)(this["JoinWrongServer"]));
@@ -219,7 +219,7 @@ namespace CommunityGamesTable.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("You have to specify your battletag. Use \"!join{1} battletag\" to join the game.")]
+        [global::System.Configuration.DefaultSettingValueAttribute("You have to specify your battletag. Use \"!{join}{1} battletag\" to join the game.")]
         public string JoinWithoutBattletag {
             get {
                 return ((string)(this["JoinWithoutBattletag"]));
@@ -382,6 +382,31 @@ namespace CommunityGamesTable.Properties {
             }
             set {
                 this["StreamerBattletag"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("signup")]
+        public string SignupCommand {
+            get {
+                return ((string)(this["SignupCommand"]));
+            }
+            set {
+                this["SignupCommand"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("If you would like to sign up for the next community game. Type this: !{join}{1} Y" +
+            "ourbattlenetHere")]
+        public string SignupText {
+            get {
+                return ((string)(this["SignupText"]));
+            }
+            set {
+                this["SignupText"] = value;
             }
         }
     }
