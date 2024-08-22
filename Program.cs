@@ -22,7 +22,7 @@ namespace CommunityGamesTable {
 					throw;
 				}
 			} else {
-				var cb = new ChatBot(settings, "NA", (x) => true, (x, y) => true);
+				var cb = new ChatBot(settings, "NA", (x) => true, (x, y) => true, () => { }, () => { });
 				cb.Start();
 				for(int i = 0; i < 20; i++) {
 					Thread.Sleep(1000);

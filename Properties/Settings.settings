@@ -21,7 +21,7 @@
       <Value Profile="(Default)">unlist</Value>
     </Setting>
     <Setting Name="regions" Type="System.String" Scope="User">
-      <Value Profile="(Default)">EU;NA;Asia;Misc</Value>
+      <Value Profile="(Default)">EU;NA;Asia;</Value>
     </Setting>
     <Setting Name="StartBotOnStartUp" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -33,7 +33,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="AnnounceChannelJoinText" Type="System.String" Scope="User">
-      <Value Profile="(Default)">You can now sign up in the community games on the {1} server!</Value>
+      <Value Profile="(Default)">You can now sign up for the community games on the '{1}' server using the "!{join}{1} battletag" command!</Value>
     </Setting>
     <Setting Name="AnnounceShutDown" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -45,10 +45,10 @@
       <Value Profile="(Default)">You have successfully joined the community games! Friend request {2} to speed up the process please.</Value>
     </Setting>
     <Setting Name="JoinWrongServer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">The community games are running on the {1} server, not the {0} one.</Value>
+      <Value Profile="(Default)">The community games are running on the '{1}' server, not the {0} one. Use "!{join}{1} battletag" to join the game.</Value>
     </Setting>
     <Setting Name="JoinNonExistentServer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">The region you attempted to join a game in does not exist. (we play on {1} today)</Value>
+      <Value Profile="(Default)">The region you attempted to join a game in does not exist. Use "!{join}{1} battletag" to join the game.</Value>
     </Setting>
     <Setting Name="JoinWithoutBattletag" Type="System.String" Scope="User">
       <Value Profile="(Default)">You have to specify your battletag. Use "!{join}{1} battletag" to join the game.</Value>
@@ -57,7 +57,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="JoinTooManyArguments" Type="System.String" Scope="User">
-      <Value Profile="(Default)">You have to only specify your battletag when joining.</Value>
+      <Value Profile="(Default)">When joining only specify your battletag.</Value>
     </Setting>
     <Setting Name="UnlistTooManyArguments" Type="System.String" Scope="User">
       <Value Profile="(Default)">This command is used without arguments.</Value>
@@ -77,11 +77,8 @@
     <Setting Name="ChatReplyDelay" Type="System.Single" Scope="User">
       <Value Profile="(Default)">1.01</Value>
     </Setting>
-    <Setting Name="AllowRefreshCommand" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="CommandsAreCaseSensitive" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="MaxInGameChatters" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">7</Value>
@@ -97,6 +94,9 @@
     </Setting>
     <Setting Name="SignupText" Type="System.String" Scope="User">
       <Value Profile="(Default)">If you would like to sign up for the next community game. Type this: !{join}{1} YourbattlenetHere</Value>
+    </Setting>
+    <Setting Name="JoinNoServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">You have to specify the region we are playing on. Use "!{join}{1} battletag" to join the game.</Value>
     </Setting>
   </Settings>
 </SettingsFile>

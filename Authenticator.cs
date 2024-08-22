@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using System.Web;
 using TwitchLib.Api;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
@@ -34,6 +35,7 @@ namespace CommunityGamesTable {
         public string? BotName;
         public string? ChannelID;
         public string? OwnerAccessToken;
+        public int TokenLiveTime;
 		#endregion
 
         public Authenticator(Properties.Settings settings) {
@@ -48,9 +50,9 @@ namespace CommunityGamesTable {
             
             bool authorized = false;
             webServer.RequestReceived += async (s, e) => {
-                if(e.Request.QueryString.AllKeys.Any("code".Contains)) {
-                    var code = e.Request.QueryString["code"];
-                    (OwnerAccessToken, refreshToken) = await OwnerOfChannelAccessAndRefresh(code);
+                if(e.Request.QueryString.AllKeys.Any("code".Contains!)) {
+                    var code = e.Request.QueryString["code"]!;
+                    (OwnerAccessToken, refreshToken, TokenLiveTime) = await OwnerOfChannelAccessAndRefresh(code);
                     (ChannelID, BotName) = await GetNameAndIDByOauthedUser(OwnerAccessToken);
                     ChannelOwnerClient = InitializeOwnerConnection(BotName, OwnerAccessToken, beforeConnecting);
                     authorized = true;
@@ -81,18 +83,10 @@ namespace CommunityGamesTable {
         public void Refresh(Action<TwitchClient> beforeReconnecting) {
             var t = RefreshTokens();
             t.Wait();
-            (OwnerAccessToken, refreshToken) = t.Result;
+            (OwnerAccessToken, refreshToken, TokenLiveTime) = t.Result;
             ChannelOwnerClient = InitializeOwnerConnection(BotName, OwnerAccessToken, beforeReconnecting);
         }
 
-        private Task<(string AccessToken, string RefreshToken)> RefreshTokens() {
-            return GetTokens(new Dictionary<string, string>() {
-                {"client_id", ClientID},
-                {"client_secret", ClientSecret},
-                {"grant_type", "refresh_token"},
-                {"refresh_token", refreshToken}
-            });
-        } 
 
         void DisplayError(string text) { 
                 MessageBox.Show(text, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -125,8 +119,20 @@ namespace CommunityGamesTable {
             var oauthUser = await api.Helix.Users.GetUsersAsync();
             return (oauthUser.Users[0].Id, oauthUser.Users[0].Login);
         }
+        
+        private Task<(string AccessToken, string RefreshToken, int TokenLiveTime)> RefreshTokens() {
+            if(refreshToken == null) {
+                throw new Exception("Cannot refresh, there is no refresh token!");
+            }
+            return GetTokens(new Dictionary<string, string>() {
+                {"client_id", ClientID},
+                {"client_secret", ClientSecret},
+                {"grant_type", "refresh_token"},
+                {"refresh_token", HttpUtility.UrlEncode(refreshToken)}
+            });
+        } 
 
-        Task<(string AccessToken, string RefreshToken)> OwnerOfChannelAccessAndRefresh(string code) {
+        Task<(string AccessToken, string RefreshToken, int TokenLiveTime)> OwnerOfChannelAccessAndRefresh(string code) {
             return GetTokens(new Dictionary<string, string>() {
                 {"client_id", ClientID},
                 {"client_secret", ClientSecret},
@@ -136,7 +142,7 @@ namespace CommunityGamesTable {
             });
         }
 
-        async Task<(string AccessToken, string RefreshToken)> GetTokens(Dictionary<string, string> values) {
+        async Task<(string AccessToken, string RefreshToken, int TokenLiveTime)> GetTokens(Dictionary<string, string> values) {
             HttpClient client = new HttpClient();
 
             var content = new FormUrlEncodedContent(values);
@@ -144,7 +150,7 @@ namespace CommunityGamesTable {
 
             var responseString = await response.Content.ReadAsStringAsync();
             var json = JObject.Parse(responseString);
-            return (json["access_token"]!.ToString(), json["refresh_token"]!.ToString());
+            return (json["access_token"]!.ToString(), json["refresh_token"]!.ToString(), int.Parse(json["expires_in"]!.ToString()));
         }
 	}
 }

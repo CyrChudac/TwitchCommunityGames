@@ -23,6 +23,7 @@
 		///  the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.panel7 = new System.Windows.Forms.Panel();
@@ -43,6 +44,8 @@
 			this.addOneWaitChatter = new System.Windows.Forms.Button();
 			this.button2 = new System.Windows.Forms.Button();
 			this.label2 = new System.Windows.Forms.Label();
+			this.timer1 = new System.Windows.Forms.Timer(this.components);
+			this.disconnectedLabel = new System.Windows.Forms.Label();
 			this.panel1.SuspendLayout();
 			this.panel7.SuspendLayout();
 			this.panel6.SuspendLayout();
@@ -57,9 +60,9 @@
 			this.panel1.Controls.Add(this.panel7);
 			this.panel1.Controls.Add(this.panel3);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-			this.panel1.Location = new System.Drawing.Point(0, 0);
+			this.panel1.Location = new System.Drawing.Point(0, 35);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(388, 457);
+			this.panel1.Size = new System.Drawing.Size(388, 422);
 			this.panel1.TabIndex = 0;
 			// 
 			// panel7
@@ -69,7 +72,7 @@
 			this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel7.Location = new System.Drawing.Point(0, 66);
 			this.panel7.Name = "panel7";
-			this.panel7.Size = new System.Drawing.Size(388, 391);
+			this.panel7.Size = new System.Drawing.Size(388, 356);
 			this.panel7.TabIndex = 3;
 			// 
 			// waitingChattersPanel
@@ -78,7 +81,7 @@
 			this.waitingChattersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.waitingChattersPanel.Location = new System.Drawing.Point(0, 0);
 			this.waitingChattersPanel.Name = "waitingChattersPanel";
-			this.waitingChattersPanel.Size = new System.Drawing.Size(388, 321);
+			this.waitingChattersPanel.Size = new System.Drawing.Size(388, 286);
 			this.waitingChattersPanel.TabIndex = 7;
 			// 
 			// panel6
@@ -86,7 +89,7 @@
 			this.panel6.Controls.Add(this.RandomWaitingChatterLabel);
 			this.panel6.Controls.Add(this.RandomWaitingChatterButton);
 			this.panel6.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel6.Location = new System.Drawing.Point(0, 321);
+			this.panel6.Location = new System.Drawing.Point(0, 286);
 			this.panel6.Name = "panel6";
 			this.panel6.Size = new System.Drawing.Size(388, 70);
 			this.panel6.TabIndex = 6;
@@ -163,9 +166,9 @@
 			this.panel2.Controls.Add(this.panel5);
 			this.panel2.Controls.Add(this.panel4);
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel2.Location = new System.Drawing.Point(388, 0);
+			this.panel2.Location = new System.Drawing.Point(388, 35);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(412, 457);
+			this.panel2.Size = new System.Drawing.Size(412, 422);
 			this.panel2.TabIndex = 3;
 			// 
 			// inGameChattersPanel
@@ -173,7 +176,7 @@
 			this.inGameChattersPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.inGameChattersPanel.Location = new System.Drawing.Point(0, 66);
 			this.inGameChattersPanel.Name = "inGameChattersPanel";
-			this.inGameChattersPanel.Size = new System.Drawing.Size(412, 321);
+			this.inGameChattersPanel.Size = new System.Drawing.Size(412, 286);
 			this.inGameChattersPanel.TabIndex = 4;
 			// 
 			// panel5
@@ -181,7 +184,7 @@
 			this.panel5.Controls.Add(this.randomInGameLabel);
 			this.panel5.Controls.Add(this.randomInGameButton);
 			this.panel5.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel5.Location = new System.Drawing.Point(0, 387);
+			this.panel5.Location = new System.Drawing.Point(0, 352);
 			this.panel5.Name = "panel5";
 			this.panel5.Size = new System.Drawing.Size(412, 70);
 			this.panel5.TabIndex = 5;
@@ -227,7 +230,6 @@
 			this.addOneWaitChatter.TabIndex = 9;
 			this.addOneWaitChatter.Text = "Add waiting";
 			this.addOneWaitChatter.UseVisualStyleBackColor = true;
-			this.addOneWaitChatter.Visible = false;
 			this.addOneWaitChatter.Click += new System.EventHandler(this.addOneWaitChatter_Click);
 			// 
 			// button2
@@ -254,6 +256,24 @@
 			this.label2.Text = "In game";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
+			// timer1
+			// 
+			this.timer1.Interval = 600000;
+			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+			// 
+			// disconnectedLabel
+			// 
+			this.disconnectedLabel.AutoSize = true;
+			this.disconnectedLabel.Dock = System.Windows.Forms.DockStyle.Top;
+			this.disconnectedLabel.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+			this.disconnectedLabel.ForeColor = System.Drawing.Color.Red;
+			this.disconnectedLabel.Location = new System.Drawing.Point(0, 0);
+			this.disconnectedLabel.Name = "disconnectedLabel";
+			this.disconnectedLabel.Size = new System.Drawing.Size(689, 35);
+			this.disconnectedLabel.TabIndex = 4;
+			this.disconnectedLabel.Text = "The bot has diconnected, it will reconnect when possible.";
+			this.disconnectedLabel.Visible = false;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -261,6 +281,7 @@
 			this.ClientSize = new System.Drawing.Size(800, 457);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
+			this.Controls.Add(this.disconnectedLabel);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(650, 200);
 			this.Name = "Form1";
@@ -276,6 +297,7 @@
 			this.panel5.PerformLayout();
 			this.panel4.ResumeLayout(false);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -300,5 +322,7 @@
 		private Panel waitingChattersPanel;
 		private Button add7ToGame;
 		private Button addOneWaitChatter;
+		private System.Windows.Forms.Timer timer1;
+		private Label disconnectedLabel;
 	}
 }

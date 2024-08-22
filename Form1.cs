@@ -174,32 +174,47 @@ namespace CommunityGamesTable {
 
 		private void StartBot() {
 			if(bot != null) {
-				MessageBox.Show("The bot is already running!.");
+				MessageBox.Show("The bot is already running!");
 			} else {
-				SelectRegionDialog d = new SelectRegionDialog(settings.GetRegions());
-				d.StartPosition = FormStartPosition.Manual;
-				d.Location = new Point(Location.X + button1.Location.X + (button1.Width - d.Width) / 2, 
-					Location.Y + button1.Location.Y);
-				var res = d.ShowDialog();
-				if(res == DialogResult.OK) {
-					if(d.SelectedRegion != null) {
-						bot = new ChatBot(settings, d.SelectedRegion, RemoveChatter, AddWaitingChatter);
-						bot.Start();
-						button1.Visible = false; 
-						button2.Visible = true;
-						add7ToGame.Visible = true;
-						SetAdd7Text();
-						if(settings.IncludeStreamerInGame) {
-							var wc = AddInGameChatter(settings.ChannelName, settings.StreamerBattletag);
-							if(wc != null) {
-								wc.NoVisible = false;
-								inGameCount--;
-								Height += wc.Height;
-							}
+				var regions = settings.GetRegions();
+				bool start;
+				string reg;
+				if(regions.Count == 1) {
+					start = true;
+					reg = regions[0];
+				} else {
+					SelectRegionDialog d = new SelectRegionDialog(regions);
+					d.StartPosition = FormStartPosition.Manual;
+					d.Location = new Point(Location.X + button1.Location.X + (button1.Width - d.Width) / 2, 
+						Location.Y + button1.Location.Y);
+					var res = d.ShowDialog();
+					start = res == DialogResult.OK && d.SelectedRegion != null;
+					reg = d.SelectedRegion!;
+				}
+				if(start) {
+					bot = new ChatBot(settings, reg, RemoveChatter, AddWaitingChatter, OnBotDisconnected, OnBotReconnected);
+					bot.Start();
+					button1.Visible = false;
+					button2.Visible = true;
+					add7ToGame.Visible = true;
+					SetAdd7Text();
+					if(settings.IncludeStreamerInGame) {
+						var wc = AddInGameChatter(settings.ChannelName, settings.StreamerBattletag);
+						if(wc != null) {
+							wc.NoVisible = false;
+							inGameCount--;
+							Height += wc.Height;
 						}
 					}
 				}
 			}
+		}
+		
+		private void OnBotDisconnected() {
+			disconnectedLabel.Invoke(()=> disconnectedLabel.Visible = true);
+		}
+		private void OnBotReconnected() {
+			disconnectedLabel.Invoke(() => disconnectedLabel.Visible = false);
 		}
 
 		private void button2_Click(object? sender, EventArgs e) {
@@ -251,6 +266,10 @@ namespace CommunityGamesTable {
 		private void addOneWaitChatter_Click(object sender, EventArgs e) {
 			AddWaitingChatter((artifitialChattersCounter * 111).ToString(), (artifitialChattersCounter * 16).ToString());
 			artifitialChattersCounter++;
+		}
+
+		private void timer1_Tick(object sender, EventArgs e) {
+			bot?.Flush();
 		}
 	}
 }
