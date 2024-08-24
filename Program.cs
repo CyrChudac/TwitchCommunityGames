@@ -2,6 +2,8 @@ namespace CommunityGamesTable {
 	internal static class Program {
 
 		const bool BypassVisualization = false;
+        public const string logsDir = "logs";
+		static string CrashLogDirectory => Path.Combine(logsDir, "crashLogs");
 		/// <summary>
 		///  The main entry point for the application.
 		/// </summary>
@@ -15,10 +17,7 @@ namespace CommunityGamesTable {
 				try {
 					Application.Run(new Form1(settings));
 				}catch(Exception e) {
-					int i = 1;
-					while(File.Exists($"CommunityGamesExceptionLog_{i}.txt"))
-						i++;
-					File.WriteAllText($"CommunityGamesExceptionLog_{i}.txt", e.Message + '\n' + e.StackTrace);
+					File.WriteAllText(CrashLogFile(), e.Message + '\n' + e.StackTrace);
 					throw;
 				}
 			} else {
@@ -29,6 +28,17 @@ namespace CommunityGamesTable {
 				}
 				cb.Dispose();
 			}
+		}
+
+		static string CrashLogFile() {
+			if(!Directory.Exists(CrashLogDirectory)) {
+				Directory.CreateDirectory(CrashLogDirectory);
+			}
+			int i = 1;
+			string FilePath() => Path.Combine(CrashLogDirectory, $"CommunityGamesExceptionLog_{i}.txt");
+			while(File.Exists(FilePath()))
+				i++;
+			return FilePath();
 		}
 	}
 }

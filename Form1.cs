@@ -10,6 +10,11 @@ namespace CommunityGamesTable {
 		internal Form1(Properties.Settings settings) {
 			this.settings = settings;
 			InitializeComponent();
+#if DEBUG
+			this.addOneWaitChatter.Visible = true;
+#else
+			this.addOneWaitChatter.Visible = false;
+#endif
 			if(settings.StartBotOnStartUp) {
 				StartBot();
 			}

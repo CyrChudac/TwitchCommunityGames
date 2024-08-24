@@ -186,7 +186,6 @@ namespace CommunityGamesTable {
         }
 
         TextWriter? logStream;
-        const string logsDir = "logs";
         private void OnLog(object? sender, OnLogArgs args) {
             if(logStream == null) {
                 logStream = CreateLogStream();
@@ -196,13 +195,13 @@ namespace CommunityGamesTable {
         }
 
         private StreamWriter CreateLogStream() {
-            if(!Directory.Exists(logsDir)) {
-                Directory.CreateDirectory(logsDir);
+            if(!Directory.Exists(Program.logsDir)) {
+                Directory.CreateDirectory(Program.logsDir);
             }
             var date = DateTime.Now.ToShortDateString();
             int i = 1;
             string GetFilePath() 
-                => $"{logsDir}\\{date}_{i}.txt";
+                => $"{Program.logsDir}\\{date}_{i}.txt";
             while(File.Exists(GetFilePath()))
                 i++;
             return new StreamWriter(File.OpenWrite(GetFilePath()));
