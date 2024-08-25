@@ -412,5 +412,17 @@ namespace CommunityGamesTable.Properties {
                 this["JoinNoServer"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RememberLogs {
+            get {
+                return ((bool)(this["RememberLogs"]));
+            }
+            set {
+                this["RememberLogs"] = value;
+            }
+        }
     }
 }

@@ -198,18 +198,21 @@ namespace CommunityGamesTable {
 				}
 				if(start) {
 					bot = new ChatBot(settings, reg, RemoveChatter, AddWaitingChatter, OnBotDisconnected, OnBotReconnected);
-					bot.Start();
-					button1.Visible = false;
-					button2.Visible = true;
-					add7ToGame.Visible = true;
-					SetAdd7Text();
-					if(settings.IncludeStreamerInGame) {
-						var wc = AddInGameChatter(settings.ChannelName, settings.StreamerBattletag);
-						if(wc != null) {
-							wc.NoVisible = false;
-							inGameCount--;
-							Height += wc.Height;
+					if(bot.Start()) {
+						button1.Visible = false;
+						button2.Visible = true;
+						add7ToGame.Visible = true;
+						SetAdd7Text();
+						if(settings.IncludeStreamerInGame) {
+							var wc = AddInGameChatter(settings.ChannelName, settings.StreamerBattletag);
+							if(wc != null) {
+								wc.NoVisible = false;
+								inGameCount--;
+								Height += wc.Height;
+							}
 						}
+					} else {
+						bot = null;
 					}
 				}
 			}
@@ -241,7 +244,7 @@ namespace CommunityGamesTable {
 
 		private void StopBot() {
 			if(bot!= null) {
-				new Thread(new ThreadStart(bot.Dispose)).Start();
+				new Thread(new ThreadStart(() => CrashLogger.RunCrashableAction(bot.Dispose))).Start();
 				bot = null;
 				button1.Visible = true; 
 				button2.Visible = false;
@@ -271,6 +274,18 @@ namespace CommunityGamesTable {
 		private void addOneWaitChatter_Click(object sender, EventArgs e) {
 			AddWaitingChatter((artifitialChattersCounter * 111).ToString(), (artifitialChattersCounter * 16).ToString());
 			artifitialChattersCounter++;
+		}
+
+		private void ComputeCrash() {
+			float sum = 0;
+			float P = 0.5f;
+			int total = 1_000_000;
+			Random r = new Random();
+			for(int i = 0; i < total; i++) {
+				if(r.NextDouble() < P)
+					sum++;
+			}
+			throw new Exception($"{P} ... {sum / total}");
 		}
 
 		private void timer1_Tick(object sender, EventArgs e) {

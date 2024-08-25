@@ -13,7 +13,7 @@ using TwitchLib.Communication.Interfaces;
 using TwitchLib.Communication.Models;
 
 namespace CommunityGamesTable {
-	internal class ChatBot : IDisposable {
+    internal class ChatBot : IDisposable {
 
         Authenticator authenticator;
         readonly Properties.Settings settings;
@@ -25,29 +25,38 @@ namespace CommunityGamesTable {
 
         public int AliveTime => authenticator.TokenLiveTime;
 
-		public ChatBot(Properties.Settings settings, string currRegion, 
+        public ChatBot(Properties.Settings settings, string currRegion,
             Func<string, bool> removeCahtter, Func<string, string, bool> addChatter,
             Action onDisconnected, Action onReconnected) {
-			this.settings = settings;
-			this.currRegion = currRegion;
-			authenticator = new Authenticator(settings);
-			this.removeCahtter = removeCahtter;
-			this.addChatter = addChatter;
+            this.settings = settings;
+            this.currRegion = currRegion;
+            authenticator = new Authenticator(settings);
+            this.removeCahtter = removeCahtter;
+            this.addChatter = addChatter;
             this.onDisconnected = onDisconnected;
             this.onReconnected = onReconnected;
-		}
+        }
 
 
-		public void Start() {
+        public bool Start() {
             void beforeConnecting(TwitchClient client) {
-                client.OnJoinedChannel += OnJoinChannel;
-                client.OnChatCommandReceived += OnCommand;
-                client.OnLeftChannel += OnDisconnectedFromChannel;
-                client.OnDisconnected += OnDisconnected;
-                client.OnConnected += OnConnected;
-                client.OnLog += OnLog;
+                client.OnJoinedChannel       += F<OnJoinedChannelArgs>       (OnJoinChannel);
+                client.OnChatCommandReceived += F<OnChatCommandReceivedArgs> (OnCommand);
+                client.OnLeftChannel         += F<OnLeftChannelArgs>         (OnDisconnectedFromChannel);
+                client.OnDisconnected        += F<OnDisconnectedEventArgs>   (OnDisconnected);
+                client.OnConnected           += F<OnConnectedArgs>           (OnConnected);
+                if(settings.RememberLogs)
+                    client.OnLog             += F<OnLogArgs>                 (OnLog);
             }
-            authenticator.Auth(beforeConnecting);
+            var res = authenticator.Auth(beforeConnecting);
+            if(!res)
+                Dispose();
+            return res;
+        }
+
+        EventHandler<T> F<T>(Action<object?, T> a)
+            where T : EventArgs {
+            return (o, t) => CrashLogger.RunCrashableAction(() => a.Invoke(o, t));
         }
 
         public void Refresh() {

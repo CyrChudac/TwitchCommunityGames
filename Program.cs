@@ -1,9 +1,10 @@
+using CommunityGamesTable.Properties;
+
 namespace CommunityGamesTable {
 	internal static class Program {
 
 		const bool BypassVisualization = false;
         public const string logsDir = "logs";
-		static string CrashLogDirectory => Path.Combine(logsDir, "crashLogs");
 		/// <summary>
 		///  The main entry point for the application.
 		/// </summary>
@@ -14,31 +15,17 @@ namespace CommunityGamesTable {
 			Properties.Settings settings = Properties.Settings.Default;
 			if(!BypassVisualization) {
 				ApplicationConfiguration.Initialize();
-				try {
-					Application.Run(new Form1(settings));
-				}catch(Exception e) {
-					File.WriteAllText(CrashLogFile(), e.Message + '\n' + e.StackTrace);
-					throw;
-				}
+				CrashLogger.RunCrashableAction(() => Application.Run(new Form1(settings)));
 			} else {
-				var cb = new ChatBot(settings, "NA", (x) => true, (x, y) => true, () => { }, () => { });
-				cb.Start();
-				for(int i = 0; i < 20; i++) {
-					Thread.Sleep(1000);
+				var cb = new ChatBot(settings, settings.GetRegions()[0], (x) => true, (x, y) => true, () => { }, () => { });
+				if(cb.Start()) {
+					for(int i = 0; i < 20; i++) {
+						Thread.Sleep(1000);
+					}
+					cb.Dispose();
 				}
-				cb.Dispose();
 			}
 		}
 
-		static string CrashLogFile() {
-			if(!Directory.Exists(CrashLogDirectory)) {
-				Directory.CreateDirectory(CrashLogDirectory);
-			}
-			int i = 1;
-			string FilePath() => Path.Combine(CrashLogDirectory, $"CommunityGamesExceptionLog_{i}.txt");
-			while(File.Exists(FilePath()))
-				i++;
-			return FilePath();
-		}
 	}
 }

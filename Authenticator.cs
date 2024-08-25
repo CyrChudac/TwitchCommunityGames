@@ -42,21 +42,22 @@ namespace CommunityGamesTable {
             this.settings = settings;
         }
 
-
-		public void Auth(Action<TwitchClient> beforeConnecting) {
+		public bool Auth(Action<TwitchClient> beforeConnecting) {
             var webServer = new HttpServer();
             var add = IPAddress.Loopback;
             webServer.EndPoint = new IPEndPoint(add, Port);
             
             bool authorized = false;
-            webServer.RequestReceived += async (s, e) => {
-                if(e.Request.QueryString.AllKeys.Any("code".Contains!)) {
-                    var code = e.Request.QueryString["code"]!;
-                    (OwnerAccessToken, refreshToken, TokenLiveTime) = await OwnerOfChannelAccessAndRefresh(code);
-                    (ChannelID, BotName) = await GetNameAndIDByOauthedUser(OwnerAccessToken);
-                    ChannelOwnerClient = InitializeOwnerConnection(BotName, OwnerAccessToken, beforeConnecting);
-                    authorized = true;
-                }
+            webServer.RequestReceived += (s, e) => {
+                CrashLogger.RunCrashableAction(async () => {
+                    if(e.Request.QueryString.AllKeys.Any("code".Contains!)) {
+                        var code = e.Request.QueryString["code"]!;
+                        (OwnerAccessToken, refreshToken, TokenLiveTime) = await OwnerOfChannelAccessAndRefresh(code);
+                        (ChannelID, BotName) = await GetNameAndIDByOauthedUser(OwnerAccessToken);
+                        ChannelOwnerClient = InitializeOwnerConnection(BotName, OwnerAccessToken, beforeConnecting);
+                        authorized = true;
+                    }
+                });
             };
 
             webServer.Start();
@@ -69,27 +70,21 @@ namespace CommunityGamesTable {
                 DisplayError("Could not open the authentication site.");
             }
 
-            int secs = 10;
+            int secs = 15;
             int waitTime = 100;
             for(int i = 0; (!authorized) && (i < secs * 1000 / waitTime); i++) {
                 Thread.Sleep(waitTime);
             }
-            if(!authorized) {
-                DisplayError("Could not connect to authentication service. (request timeout)");
-            }
             new Thread(new ThreadStart(() => ShutDownServer(webServer))).Start();
+            if(!authorized) {
+                DisplayError("Could not connect to authentication service. (request timeout)", false);
+            }
+            return authorized;
         }
 
-        public void Refresh(Action<TwitchClient> beforeReconnecting) {
-            var t = RefreshTokens();
-            t.Wait();
-            (OwnerAccessToken, refreshToken, TokenLiveTime) = t.Result;
-            ChannelOwnerClient = InitializeOwnerConnection(BotName, OwnerAccessToken, beforeReconnecting);
-        }
-
-
-        void DisplayError(string text) { 
-                MessageBox.Show(text, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        void DisplayError(string text, bool throwing = true) { 
+            MessageBox.Show(text, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if(throwing)
                 throw new Exception(text);
         }
 
@@ -110,7 +105,6 @@ namespace CommunityGamesTable {
             return ownerTwitchClient;
         }
 
-
         async Task<(string Id, string Channel)> GetNameAndIDByOauthedUser(string token) {
             var api = new TwitchAPI();
             api.Settings.ClientId = ClientID;
@@ -119,18 +113,6 @@ namespace CommunityGamesTable {
             var oauthUser = await api.Helix.Users.GetUsersAsync();
             return (oauthUser.Users[0].Id, oauthUser.Users[0].Login);
         }
-        
-        private Task<(string AccessToken, string RefreshToken, int TokenLiveTime)> RefreshTokens() {
-            if(refreshToken == null) {
-                throw new Exception("Cannot refresh, there is no refresh token!");
-            }
-            return GetTokens(new Dictionary<string, string>() {
-                {"client_id", ClientID},
-                {"client_secret", ClientSecret},
-                {"grant_type", "refresh_token"},
-                {"refresh_token", HttpUtility.UrlEncode(refreshToken)}
-            });
-        } 
 
         Task<(string AccessToken, string RefreshToken, int TokenLiveTime)> OwnerOfChannelAccessAndRefresh(string code) {
             return GetTokens(new Dictionary<string, string>() {

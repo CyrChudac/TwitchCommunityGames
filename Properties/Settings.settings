@@ -98,5 +98,8 @@
     <Setting Name="JoinNoServer" Type="System.String" Scope="User">
       <Value Profile="(Default)">You have to specify the region we are playing on. Use "!{join}{1} battletag" to join the game.</Value>
     </Setting>
+    <Setting Name="RememberLogs" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
